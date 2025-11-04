@@ -53,7 +53,7 @@ class odoo_conection:
             rows += f"    <td>{item.get('name')}</td>"
             rows += f"    <td>{item.get('x_studio_cliente_origen')}</td>"
             rows += f"    <td>{item.get('product_id', ['',''])[1] }</td>"
-            rows += f"    <td>{item.get('lot_id') }</td>"
+            rows += f"    <td>{item.get('lot_id', ['',''])[1] if item.get('lot_id') else '' }</td>"
             #rows += f"    <td>{item.get('x_studio_fecha_gspn')}</td>"
             rows += f"    <td>{str_date}</td>"
             rows += f"    <td>{item.get('x_studio_status_general_rep', ['',''])[1]}</td>" #background:#007BFF; color:#ffffff;

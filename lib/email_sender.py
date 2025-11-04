@@ -42,8 +42,8 @@ class EmailSender:
     def mail_template(self, title, rows = ""):
         # Renderizar la plantilla con el contexto proporcionado
        
-        html_content = '<!DOCTYPE html>'
-        html_content += '<html lang="en">'
+        html_content = "<!DOCTYPE html>"
+        html_content += "<html lang='en'>"
         html_content += '<head>'
         html_content += '  <meta charset="utf-8" />'
         html_content += '  <meta name="viewport" content="width=device-width, initial-scale=1" />'
@@ -71,7 +71,7 @@ class EmailSender:
         html_content += '    table { border-collapse: collapse; }'
         #/* ===== Layout ===== */
         html_content += '    .wrapper { width: 100%; background: #f8fafc; }'
-        html_content += '    .container { width: 100%; max-width: 800px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }'
+        html_content += '    .container { width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }'
         html_content += '    .section { padding: 24px; }'
         html_content += '    .header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e2e8f0; }'
         html_content += '    .brand { font-weight: 700; font-size: 18px; }'
@@ -99,12 +99,48 @@ class EmailSender:
         html_content += '    .footer { border-top: 1px solid #e2e8f0; padding: 24px; color: #64748b; font-size: 12px; }'
         html_content += '    .mt-8 { margin-top: 8px; }'
 
+        # /* ==== ESTILOS PARA TABLAS DE INFORMES ==== */
+        html_content += '.report-table { '
+        html_content += '  width: 100%; border-collapse: collapse; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px;'
+        html_content += '  color: #0d121b; border: 1px solid #cfd7e7; background-color: #ffffff; border-radius: 8px; overflow: hidden; } '
+
+        # /* Encabezado */
+        html_content += '.report-table thead {'
+        html_content += ' background-color: #e6f2ff;  /* azul claro */ color: #0d121b; text-transform: uppercase; font-weight: 700; }'
+
+        html_content += '.report-table th { '
+        html_content += 'padding: 10px 14px; text-align: left; border-bottom: 1px solid #cfd7e7; }'
+
+        # /* Filas del cuerpo */
+        html_content += '.report-table td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; }' 
+
+        #/* Alternar color de filas */
+        html_content += '.report-table tbody tr:nth-child(even) { background-color: #f8fafc; }'
+
+        #/* Hover (opcional si no es correo) */
+        html_content += '.report-table tbody tr:hover { background-color: #eef6ff; } '
+
+        #/* Enlace limpio */
+        html_content += '.report-table a { ' 
+        html_content += '  border-style:solid; box-sizing:border-box; border-left-color:#875a7b; border-bottom-color:#875a7b; border-right-color:#875a7b;'
+        html_content += '  border-top-color:#875a7b; border-left-width:1px; border-bottom-width:1px; border-right-width:1px; border-top-width:1px;' 
+        html_content += '  padding: 5px 10px; color: #FFFFFF; text-decoration: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius: 3px; }' 
+
+        html_content += '.report-table a:hover { color: #0056cc;  text-decoration: underline; }'
+
         #/* ===== Mobile tweaks (opcional) ===== */
         html_content += '    @media only screen and (max-width: 620px) {'
         html_content += '      .section, .cards, .cta-wrap { padding-left: 16px; padding-right: 16px; }'
         html_content += '      .paragraph { margin-left: 16px; margin-right: 16px; }'
         html_content += '      .title { font-size: 22px; }'
         html_content += '    }'
+        html_content += '    @media only screen and (max-width: 600px) {'
+        html_content += '      .report-table th, .report-table td {'
+        html_content += '        padding: 8px 10px;'
+        html_content += '        font-size: 13px;'
+        html_content += '      }'
+        html_content += '    }'
+
         html_content += '  </style>'
         html_content += '</head>'
         html_content += '<body>'
@@ -128,37 +164,36 @@ class EmailSender:
         html_content += '            <tr>'
         html_content += '              <td class="section" style="padding-top:12px;">'
         html_content += '                <h1 class="title">🔔 Tienes órdenes por atender — actualiza su estado cuando antes. </h1>'
-        html_content += F'                <p class="subtitle"> Generado automáticamente el 04 de noviembre de 2025 : {datetime.now().strftime("%Y-%m-%d")}</p>'
+        html_content += '                <p class="subtitle">Comunicación interna: Esta es una notificación automatica e informativa.</p>'
+        html_content += F'               <p class="subtitle"> Generado automáticamente el 04 de noviembre de 2025 : {datetime.now().strftime("%Y-%m-%d")}</p>'
         html_content += '              </td>'
         html_content += '            </tr>'
 
 
         #<!-- Recordatorio de órdenes pendientes -->
+        #html_content += '            <tr>'
+        #html_content += '              <td class="section" style="padding-top:12px;">'
+        # 
+        #html_content += '              </td>'
+        #html_content += '            </tr>'
+
         html_content += '            <tr>'
         html_content += '              <td class="section" style="padding-top:12px;">'
-        html_content += F'                <p class="subtitle">Comunicación interna: Esta es una notificación automatica e informativa.</p>'
-        html_content += '              </td>'
-        html_content += '            </tr>'
-
-
-        html_content += '            <tr>'
-        html_content += '              <td class="section" style="padding-top:12px;">'
-
           
         html_content += '                <p style="margin:0 0 8px 0;">Hola,</p>'
         html_content += '                <p style="margin:0 0 16px 0;">Estas son tus órdenes ONE STOP pendientes por agendar cita:</p>'
           
-        html_content += '                <table border="0" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">'
+        html_content += '                <table class="report-table">'
         html_content += '                 <thead>'
-        html_content += '                   <tr style="text-align:left;border-bottom:1px solid #444;">'
-        html_content += '                     <th>Referencia de reparación</th>'
+        html_content += '                   <tr>'
+        html_content += '                     <th>Orden</th>'
         html_content += '                     <th>Cliente</th>'
-        html_content += '                     <th>Producto a reparar</th>'
-        html_content += '                     <th>Lote /Número de serie</th>'
+        html_content += '                     <th>Producto</th>'
+        html_content += '                     <th>Número de serie</th>'
         #html_content += '                     <th>Fecha GSPN</th>'
         html_content += '                     <th>Creado el</th>'
-        html_content += '                     <th>Status</th>'
-        html_content += '                     <th></th>'
+        html_content += '                     <th>Estatus</th>'
+        html_content += '                     <th>Enlace</th>'
         html_content += '                   </tr>'
         html_content += '                 </thead>'
         html_content += '                 <tbody>'
