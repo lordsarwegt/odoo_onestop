@@ -71,7 +71,7 @@ class EmailSender:
         html_content += '    table { border-collapse: collapse; }'
         #/* ===== Layout ===== */
         html_content += '    .wrapper { width: 100%; background: #f8fafc; }'
-        html_content += '    .container { width: 100%; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }'
+        html_content += '    .container { width: 100%; max-width: 800px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }'
         html_content += '    .section { padding: 24px; }'
         html_content += '    .header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e2e8f0; }'
         html_content += '    .brand { font-weight: 700; font-size: 18px; }'
@@ -127,8 +127,8 @@ class EmailSender:
         #    <!-- Título -->
         html_content += '            <tr>'
         html_content += '              <td class="section" style="padding-top:12px;">'
-        html_content += '                <h1 class="title">Recordatorio de Órdenes Pendientes</h1>'
-        html_content += F'                <p class="subtitle">Generado el: {datetime.now()}</p>'
+        html_content += '                <h1 class="title">🔔 Tienes órdenes por atender — actualiza su estado cuando antes. </h1>'
+        html_content += F'                <p class="subtitle"> Generado automáticamente el 04 de noviembre de 2025 : {datetime.now().strftime("%Y-%m-%d")}</p>'
         html_content += '              </td>'
         html_content += '            </tr>'
 
@@ -136,7 +136,7 @@ class EmailSender:
         #<!-- Recordatorio de órdenes pendientes -->
         html_content += '            <tr>'
         html_content += '              <td class="section" style="padding-top:12px;">'
-        html_content += F'                <p class="subtitle">Comunicación interna: Esta notificación es informativa. Atiende o actualiza el estado de tus pedidos.</p>'
+        html_content += F'                <p class="subtitle">Comunicación interna: Esta es una notificación automatica e informativa.</p>'
         html_content += '              </td>'
         html_content += '            </tr>'
 
@@ -148,21 +148,21 @@ class EmailSender:
         html_content += '                <p style="margin:0 0 8px 0;">Hola,</p>'
         html_content += '                <p style="margin:0 0 16px 0;">Estas son tus órdenes ONE STOP pendientes por agendar cita:</p>'
           
-        html_content += '                <table border="0" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;background:#1F1F1F;color:#EDEDED;">'
+        html_content += '                <table border="0" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">'
         html_content += '                 <thead>'
         html_content += '                   <tr style="text-align:left;border-bottom:1px solid #444;">'
         html_content += '                     <th>Referencia de reparación</th>'
         html_content += '                     <th>Cliente</th>'
         html_content += '                     <th>Producto a reparar</th>'
         html_content += '                     <th>Lote /Número de serie</th>'
-        html_content += '                     <th>Fecha GSPN</th>'
+        #html_content += '                     <th>Fecha GSPN</th>'
         html_content += '                     <th>Creado el</th>'
         html_content += '                     <th>Status</th>'
         html_content += '                     <th></th>'
         html_content += '                   </tr>'
         html_content += '                 </thead>'
         html_content += '                 <tbody>'
-        #html_content += f'                  {.join(rows)}'
+        html_content += f'                  {rows}'
         html_content += '                 </tbody>'
         html_content += '                </table>'
         html_content += '              </td>'

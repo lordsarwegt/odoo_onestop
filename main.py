@@ -1,23 +1,32 @@
 import lib.email_sender as email_sender
+import ordenes as ord
+import os
 
-
-MAIL_SERVER = "smtp.office365.com"
-MAIL_PORT = 587
-MAIL_USERNAME = "firewall@agiotech.com"
-MAIL_PASSWORD = "Agiotech01"
-MAIL_FROM = "firewall@agiotech.com"
 
 
 def main():
+    from dotenv import load_dotenv
+    load_dotenv()
 
-    sender = email_sender.EmailSender(smtp_server = MAIL_SERVER, smtp_port = MAIL_PORT, username = MAIL_USERNAME, password = MAIL_PASSWORD, use_tls=True)
-    template = sender.mail_template(title="Weekly Performance Report")
+    # Buscar las ordenes en Odoo
+    odc = ord.odoo_conection()
+    models = odc.start_odoo_connection()
+    
+    rows = odc.get_ordenes(models)
+
+    sender = email_sender.EmailSender(
+            smtp_server = os.getenv('MAIL_SERVER'), 
+            smtp_port = os.getenv('MAIL_PORT'), 
+            username = os.getenv('MAIL_USERNAME'), 
+            password = os.getenv('MAIL_PASSWORD'), use_tls=True)
+    
+    template = sender.mail_template(title="Recordatorio de Órdenes Pendientes", rows=rows)
 
     sender.send_html_email(
-        to_email="carlos.barreto@agiotech.com",
-        subject="Weekly Performance Report",
+        to_email="sistemas@agiotech.com",
+        subject="Recordatorio de Órdenes Pendientes",
         html_content=template,
-        from_email=MAIL_FROM
+        from_email=os.getenv('MAIL_FROM')
     )
 
 if __name__ == "__main__":
