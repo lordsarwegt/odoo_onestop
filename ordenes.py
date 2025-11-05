@@ -28,12 +28,14 @@ class odoo_conection:
         domain =  [[
             ['x_studio_agendado_el','=',False],
             ['name','ilike','ONESTOP'],
-            ['x_studio_tipo_de_servicio_lb','=','ONE STOP']
+            ['x_studio_tipo_de_servicio_lb','=','ONE STOP'],
+            ['x_studio_status_general_rep','not in',[103]],
         ]]
         
-        fields = ['name', 'x_studio_cliente_origen', 'product_id','lot_id','x_studio_fecha_gspn',
-                  'create_date','x_studio_status_general_rep']
-
+        fields_list = ['name', 'x_studio_cliente_origen', 'product_id','lot_id','x_studio_fecha_gspn',
+                  'create_date', 'x_studio_status_general', 'x_studio_status_general_rio','x_studio_status_general_rep']
+        
+        fields = fields_list
         datos = models.execute_kw(os.getenv('DB_LOC'), self.uid, os.getenv('DB_PASS'),     
             'repair.order', 'search_read', 
             domain,
@@ -46,6 +48,10 @@ class odoo_conection:
             url = f"https://agiotech.odoo.com//web#id={item.get('id')}&model=repair.order&view_type=form"
 
             str_date = item.get('create_date').split(' ')[0]
+            st_id = item.get('x_studio_status_general_rep', ['',''])[0]
+
+            from lib.status import status_list
+            status_name = status_list.get(st_id, 'Desconocido')
             #format_code = "%Y-%m-%d"
             #createdate = datetime.strptime(str_date, format_code).split(' ')[0]
 
@@ -56,12 +62,13 @@ class odoo_conection:
             rows += f"    <td>{item.get('lot_id', ['',''])[1] if item.get('lot_id') else '' }</td>"
             #rows += f"    <td>{item.get('x_studio_fecha_gspn')}</td>"
             rows += f"    <td>{str_date}</td>"
-            rows += f"    <td>{item.get('x_studio_status_general_rep', ['',''])[1]}</td>" #background:#007BFF; color:#ffffff;
+            rows += f"    <td>{status_name}</td>" #, ['',''])[1]
             rows += f"    <td><a href='{url}' style='display:inline-block;   font-weight:600; font-size:16px; line-height:1; border-radius:10px; padding:12px 20px; text-align:center;'>"
             rows += f"        Ver Ticket"
             rows += f"    </a></td>"
             rows += f"    </tr>"
 
+            print (item)
         return rows
             
 

@@ -29,5 +29,7 @@ def main():
         from_email=os.getenv('MAIL_FROM')
     )
 
+    odc.close_odoo_connection()
+
 if __name__ == "__main__":
     main()
