@@ -39,7 +39,7 @@ class EmailSender:
             print(f"Error al enviar el correo: {e}")
 
 
-    def mail_template(self, title, rows = ""):
+    def mail_template(self, title, status_count = {}, rows = ""):
         # Renderizar la plantilla con el contexto proporcionado
        
         html_content = "<!DOCTYPE html>"
@@ -154,7 +154,7 @@ class EmailSender:
         html_content += '              <td class="section">'
         html_content += '                <div class="header">'
         #                                  <!-- Simple icon (evitamos fuentes de íconos) -->
-        html_content += '                  <div aria-hidden="true" style="font-size:24px; line-height:1;">◔</div>'
+        #html_content += '                  <div aria-hidden="true" style="font-size:24px; line-height:1;">◔</div>'
         html_content += '                  <div class="brand">AGIOTECH DE MEXICO S.A. DE C.V.</div>'
         html_content += '                </div>'
         html_content += '              </td>'
@@ -170,17 +170,38 @@ class EmailSender:
         html_content += '            </tr>'
 
 
-        #<!-- Recordatorio de órdenes pendientes -->
-        #html_content += '            <tr>'
-        #html_content += '              <td class="section" style="padding-top:12px;">'
-        # 
-        #html_content += '              </td>'
-        #html_content += '            </tr>'
+        # Status count 
+        html_content += '            <tr>'
+        html_content += '             <td class="section" style="padding-top:12px;">'
+        html_content += '                <p style="margin:0 0 8px 0;">Hola,</p>'
+        html_content += '                <p style="margin:0 0 16px 0;">Total de Ordenes por Estatus:</p>'
+        html_content += F'                <table role="table" class="report-table">'
+        html_content += F'                  <thead>'
+        html_content += F'                    <tr>'
+        html_content += F'                      <th>Estatus</th>'
+        html_content += F'                      <th>Cuenta de Estatus</th>'
+        html_content += F'                    </tr>'
+        html_content += F'                  </thead>'
+        html_content += F'                  <tbody id="tbody">'
 
+        total = 0
+        for key, value in status_count.items():
+          html_content += f"<tr><td>{str(key)}</td><td>{str(value)}</td></tr>"
+          total += value
+
+          #html_content += F'{"".join(status_count.values())}'
+
+        #        <!-- filas generadas por JS o por server-side -->
+        #html_content += f"<tr></tr>"
+        html_content += f'<tr><td></td><td>Total de Ordenes: <span style="color: green;"><strong> {str(total)} </strong></span> </td></tr>'
+        html_content += F'                  </tbody>'
+        html_content += F'                </table>'
+        html_content += '              </td>'
+        html_content += '            </tr>'
+
+        # Tabla de listado de ordenes
         html_content += '            <tr>'
         html_content += '              <td class="section" style="padding-top:12px;">'
-          
-        html_content += '                <p style="margin:0 0 8px 0;">Hola,</p>'
         html_content += '                <p style="margin:0 0 16px 0;">Estas son tus órdenes ONE STOP pendientes por agendar cita:</p>'
           
         html_content += '                <table class="report-table">'

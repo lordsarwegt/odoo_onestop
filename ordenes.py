@@ -26,12 +26,13 @@ class odoo_conection:
 
     def get_ordenes(self, models):
         domain =  [[
-            ['x_studio_agendado_el','=',False],
-            ['name','ilike','ONESTOP'],
+            ['x_studio_agendado_el','=',False],           
             ['x_studio_tipo_de_servicio_lb','=','ONE STOP'],
             ['x_studio_status_general_rep','not in',[103]],
         ]]
-        
+
+# ['name','ilike','ONESTOP'],
+       
         fields_list = ['name', 'x_studio_cliente_origen', 'product_id','lot_id','x_studio_fecha_gspn',
                   'create_date', 'x_studio_status_general', 'x_studio_status_general_rio','x_studio_status_general_rep']
         
@@ -41,20 +42,29 @@ class odoo_conection:
             domain,
             {'fields': fields})
         
-        
+        status_count = {}        
 
         rows = ""
         for item in datos:
             url = f"https://agiotech.odoo.com//web#id={item.get('id')}&model=repair.order&view_type=form"
 
+            from lib.status import status_list
+               
+
+
             str_date = item.get('create_date').split(' ')[0]
             st_id = item.get('x_studio_status_general_rep', ['',''])[0]
+            status_name = status_list.get(st_id, 'Desconocido') 
 
-            from lib.status import status_list
-            status_name = status_list.get(st_id, 'Desconocido')
-            #format_code = "%Y-%m-%d"
-            #createdate = datetime.strptime(str_date, format_code).split(' ')[0]
 
+            if isinstance(status_name, list):
+                status_name = status_name[0]
+
+            #Aumentar el contador o iniciarlo en 1
+            status_count[status_name] = status_count.get(status_name, 0) + 1
+
+            
+           
             rows += f"<tr>"
             rows += f"    <td>{item.get('name')}</td>"
             rows += f"    <td>{item.get('x_studio_cliente_origen')}</td>"
@@ -68,8 +78,10 @@ class odoo_conection:
             rows += f"    </a></td>"
             rows += f"    </tr>"
 
-            print (item)
-        return rows
+           # print (item)
+
+
+        return rows, status_count
             
 
 ''' METODOS DE CONEXION A ODOO No probados -- Begin
