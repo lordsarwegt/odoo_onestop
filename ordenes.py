@@ -30,8 +30,63 @@ class odoo_conection:
             ['x_studio_tipo_de_servicio_lb','=','ONE STOP'],
             ['x_studio_status_general_rep','not in',[103]],
         ]]
+       
+        fields_list = ['name', 'x_studio_cliente_origen', 'product_id','lot_id','x_studio_fecha_gspn',
+                  'create_date', 'x_studio_status_general', 'x_studio_status_general_rio','x_studio_status_general_rep']
+        
+        fields = fields_list
+        datos = models.execute_kw(os.getenv('DB_LOC'), self.uid, os.getenv('DB_PASS'),     
+            'repair.order', 'search_read', 
+            domain,
+            {'fields': fields})
+        
+        status_count = {}        
 
-# ['name','ilike','ONESTOP'],
+        rows = ""
+        for item in datos:
+            url = f"https://agiotech.odoo.com//web#id={item.get('id')}&model=repair.order&view_type=form"
+
+            from lib.status import status_list
+               
+
+
+            str_date = item.get('create_date').split(' ')[0]
+            st_id = item.get('x_studio_status_general_rep', ['',''])[0]
+            status_name = status_list.get(st_id, 'Desconocido') 
+
+
+            if isinstance(status_name, list):
+                status_name = status_name[0]
+
+            #Aumentar el contador o iniciarlo en 1
+            status_count[status_name] = status_count.get(status_name, 0) + 1
+
+            
+           
+            rows += f"<tr>"
+            rows += f"    <td>{item.get('name')}</td>"
+            rows += f"    <td>{item.get('x_studio_cliente_origen')}</td>"
+            rows += f"    <td>{item.get('product_id', ['',''])[1] }</td>"
+            rows += f"    <td>{item.get('lot_id', ['',''])[1] if item.get('lot_id') else '' }</td>"
+            #rows += f"    <td>{item.get('x_studio_fecha_gspn')}</td>"
+            rows += f"    <td>{str_date}</td>"
+            rows += f"    <td>{status_name}</td>" #, ['',''])[1]
+            rows += f"    <td><a href='{url}' style='display:inline-block;   font-weight:600; font-size:16px; line-height:1; border-radius:10px; padding:12px 20px; text-align:center;'>"
+            rows += f"        Ver Ticket"
+            rows += f"    </a></td>"
+            rows += f"    </tr>"
+
+           # print (item)
+
+
+        return rows, status_count
+    
+    def get_ordenes_inventory_trigger(self, models):
+        domain =  [[
+            ['x_studio_agendado_el','=',False],           
+            ['x_studio_tipo_de_servicio_lb','=','ONE STOP'],
+            ['x_studio_status_general_rep','not in',[103]],
+        ]]
        
         fields_list = ['name', 'x_studio_cliente_origen', 'product_id','lot_id','x_studio_fecha_gspn',
                   'create_date', 'x_studio_status_general', 'x_studio_status_general_rio','x_studio_status_general_rep']
