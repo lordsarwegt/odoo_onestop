@@ -1,5 +1,4 @@
 import lib.email_sender as email_sender
-from lib.agioLog import AgioLog as log
 import ordenes as ord
 import os
 
@@ -13,8 +12,12 @@ def main():
     odc = ord.odoo_conection()
     models = odc.start_odoo_connection()
     
-    rows, status_count = odc.get_ordenes_inventory_trigger(models)
+    rows= odc.get_pending_sim(models)
+    if rows == '':
+        return 
     
+    if len(rows) == 0:
+        return 
 
     sender = email_sender.EmailSender(
             smtp_server = os.getenv('MAIL_SERVER'), 
@@ -22,11 +25,11 @@ def main():
             username = os.getenv('MAIL_USERNAME'), 
             password = os.getenv('MAIL_PASSWORD'), use_tls=True)
     
-    template = sender.mail_template(title="Recordatorio de Órdenes Pendientes", status_count = status_count,  rows=rows, type="inventory_trigger")
+    template = sender.mail_template_sim(title="SIM Pendientes de Recarga", rows=rows)
 
     sender.send_html_email(
-        to_email="informacion.ce@agiotech.com",
-        subject="Recordatorio de Órdenes Pendientes",
+        to_email="compras@agiotech.com",
+        subject="SIM Pendientes de Recarga",
         html_content=template,
         from_email=os.getenv('MAIL_FROM')
     )
@@ -34,7 +37,4 @@ def main():
     odc.close_odoo_connection()
 
 if __name__ == "__main__":
-    logPath = os.getcwd() + "\\logs"
-    log = log(path=logPath)
-
     main()
